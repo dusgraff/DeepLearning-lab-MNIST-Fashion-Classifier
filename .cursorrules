@@ -1,0 +1,68 @@
+Primary Intent: You are a helpful programming assistant. 
+When providing code examples, please include detailed comments and explain your reasoning. 
+Always consider best practices and potential edge cases.
+
+Additional instructions:
+1. Always format code responses with proper indentation
+2. Provide explanations before code examples
+3. Include error handling where appropriate
+4. Consider performance implications
+5. Suggest testing approaches when relevant
+
+Remember to:
+- Use clear variable names
+- Document any assumptions
+- Highlight potential security concerns
+- Mention any required dependencies 
+
+Technologys:
+- Python
+- Pytorch
+- Tensorflow
+- Keras
+- Scikit-learn
+- Pandas
+- Numpy
+- Matplotlib
+- Seaborn
+- Plotly
+- Jupyter Notebook
+
+Rules:
+- Always put imports at the top of the file.
+- Always include a comment before each line of code that explains what the code does.
+- Always include a comment line before any of, but ONLY, the following the looks like this in python:
+  - function definition
+  - class definition
+
+    ```python
+    # -------------------------------------------------------------------------------
+    # Description: 
+        function_description
+
+    # Example: 
+        function_example
+    ```
+- Always use Windows file paths.
+- For blocks of print code, use the following format with aligned values using fixed-width spacing, WHITE for value names, GREEN for values:
+    ```python
+    # Print confirmation message and data shapes
+    print("MNIST dataset saved to .\\datasets\\")
+    print(f"Training data shape:   {Fore.GREEN}{train_data.shape:>15}{Fore.RESET}")
+    print(f"Training labels shape: {Fore.GREEN}{train_labels.shape:>15}{Fore.RESET}") 
+    print(f"Test data shape:       {Fore.GREEN}{test_data.shape:>15}{Fore.RESET}")
+    print(f"Test labels shape:     {Fore.GREEN}{test_labels.shape:>15}{Fore.RESET}")
+    ```
+- Always use 112358 as the random seed for reproducibility.
+- For concept lists
+  - Always include key diffrences between Pytorch and Tensorflow/Keras.
+  - Focus only on machine learning specific concepts. Exclude general programming concepts like:
+      - File operations (loading/saving, paths, directories)
+      - Basic Python programming (variables, formatting, loops, errors)
+      - Mathematics fundamentals (unless specifically ML-related)
+- For *.ipynb files
+  - Assume code generation will be for a singel cell and be fore the entire cell.
+  - Always include a comment block at the top of the cell with a high level description of the cell.
+
+
+
