@@ -36,14 +36,17 @@ if os.path.exists('.\\datasets'):
 # create datasets directory
 os.makedirs('.\\datasets')
 
+# Define the class names for Fashion MNIST labels
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
 # -------------------------------------------------------------------------------
 print_header("Downloading and Loading MNIST Dataset") 
 
 # Load Fashion MNIST dataset from tensorflow
 (train_data, train_labels), (test_data, test_labels) = tf.keras.datasets.fashion_mnist.load_data()
 
-
-# Save training data and labels
+# Save training data and labels in original format (N, H, W)
 np.save(train_data_path, train_data)
 np.save(train_labels_path, train_labels)
 
@@ -58,9 +61,7 @@ print(f"Training labels shape: {Fore.GREEN}{str(train_labels.shape):<20}{Fore.RE
 print(f"Test data shape:       {Fore.GREEN}{str(test_data.shape):<20}{Fore.RESET}")
 print(f"Test labels shape:     {Fore.GREEN}{str(test_labels.shape):<20}{Fore.RESET}") 
 
-# Define the class names for Fashion MNIST labels
-class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
 
 # -------------------------------------------------------------------------------
 print_header("Sample Images from MNIST Dataset") 
