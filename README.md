@@ -1,7 +1,7 @@
 ## Download data
 
 ```
-python mnist_!download_dataset.py
+python mnist_download_dataset.py
 ```
 
 ## Train, evaluate, and save model - PyTorch
