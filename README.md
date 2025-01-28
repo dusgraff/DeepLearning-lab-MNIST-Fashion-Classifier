@@ -2,7 +2,6 @@
 
 Convolutional Neural Network
 
-MNIST dataset - Image Classification
 
 ## Download data
 
