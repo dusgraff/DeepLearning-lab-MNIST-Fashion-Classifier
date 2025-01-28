@@ -182,3 +182,6 @@ models/
 ./models/
 model/
 ./model/
+checkpoints/
+./checkpoints/
+
