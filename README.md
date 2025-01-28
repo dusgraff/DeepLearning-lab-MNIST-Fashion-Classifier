@@ -1,8 +1,3 @@
-# MNIST Fashion Imange Classifier
-
-Convolutional Neural Network
-
-
 ## Download data
 
 ```
