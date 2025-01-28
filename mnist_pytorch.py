@@ -154,6 +154,112 @@ model = CNN()
 print(model)
 
 # -------------------------------------------------------------------------------
+print_header("Evaluating initial model performance")
+
+
+# -------------------------------------------------------------------------------
+# Description: 
+#     Calculates model loss on test dataset
+#     Returns average loss value
+# Example:
+#     test_loss = get_test_loss(model, test_data, test_labels)
+
+def get_test_loss(model, data, labels, batch_size=64):
+    # Set model to evaluation mode
+    model.eval()
+    
+    # Initialize loss function
+    criterion = nn.CrossEntropyLoss()
+    
+    # Initialize total loss
+    total_loss = 0.0
+    
+    # Disable gradient calculation for inference
+    with torch.no_grad():
+        # Process data in batches
+        for i in range(0, len(data), batch_size):
+            # Get batch of data and labels
+            inputs = data[i:i+batch_size]
+            targets = labels[i:i+batch_size]
+            
+            # Forward pass
+            outputs = model(inputs)
+            
+            # Calculate loss for this batch
+            loss = criterion(outputs, targets)
+            
+            # Add batch loss to total
+            total_loss += loss.item() * len(inputs)
+    
+    # Calculate average loss
+    avg_loss = total_loss / len(data)
+    
+    # Set model back to training mode
+    model.train()
+    
+    return avg_loss
+
+# Calculate initial test loss
+test_loss = get_test_loss(model, test_data, test_labels)
+
+# Print initial model metrics
+print(f"Initial test loss:     {Fore.GREEN}{test_loss:>15.4f}{Fore.RESET}")
+
+
+
+# -------------------------------------------------------------------------------
+# Description: 
+#     Evaluates model performance on given dataset and labels
+#     Returns accuracy and predictions
+# Example:
+#     accuracy, predictions = evaluate_model(model, test_data, test_labels)
+
+def evaluate_model(model, data, labels, batch_size=64):
+    # Set model to evaluation mode
+    model.eval()
+    
+    # Initialize counters for accuracy calculation
+    correct = 0
+    total = 0
+    
+    # List to store predictions
+    predictions = []
+    
+    # Disable gradient calculation for inference
+    with torch.no_grad():
+        # Process data in batches
+        for i in range(0, len(data), batch_size):
+            # Get batch of data and labels
+            inputs = data[i:i+batch_size]
+            targets = labels[i:i+batch_size]
+            
+            # Forward pass
+            outputs = model(inputs)
+            
+            # Get predictions
+            _, predicted = torch.max(outputs.data, 1)
+            predictions.extend(predicted.tolist())
+            
+            # Update accuracy counters
+            total += targets.size(0)
+            correct += (predicted == targets).sum().item()
+    
+    # Calculate accuracy
+    accuracy = 100 * correct / total
+
+    # Set model back to training mode
+    model.train()
+
+    return accuracy, predictions
+
+# Evaluate initial model performance on training data
+train_accuracy, train_predictions = evaluate_model(model, train_data, train_labels)
+
+# Print initial model performance
+print(f"Initial Training Accuracy: {Fore.GREEN}{train_accuracy:>15.2f}%{Fore.RESET}")
+
+
+# -------------------------------------------------------------------------------
 print_header("Training Configuration")
 
 # Define loss function and optimizer
@@ -163,6 +269,10 @@ optimizer = optim.Adam(model.parameters(), lr=0.0005)  # Reduced learning rate
 # Set training hyperparameters
 epochs = 20  # Increased epochs
 batch_size = 64  # Reduced batch size
+
+# Set model back to training mode
+model.train()
+
 
 # Print training configuration details
 print(f"Loss Function:        {Fore.GREEN}{'CrossEntropyLoss':>15}{Fore.RESET}")
@@ -190,10 +300,35 @@ for epoch in range(epochs):
         loss.backward()
         optimizer.step()
 
+
     print(f"Epoch {epoch+1} completed at {time.strftime('%H:%M:%S', time.gmtime(time.time()))}")
     print(f"Time taken: {time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))}")
     print(f"Loss: {loss.item()}")
-    print()
+
+    # Evaluate model performance on training data
+    train_accuracy, train_predictions = evaluate_model(model, train_data, train_labels)
+    print(f"Training Accuracy: {Fore.GREEN}{train_accuracy:>15.2f}%{Fore.RESET}")
+    
+    # Get test accuracy and loss using evaluate_model function
+    test_accuracy, test_predictions = evaluate_model(model, test_data, test_labels)
+    
+    # Get current test loss
+    test_loss = get_test_loss(model, test_data, test_labels)
+    
+    # Print training and test metrics comparison
+    print(f"Training Loss:       {Fore.GREEN}{loss.item():>15.4f}{Fore.RESET}")
+    print(f"Test Loss:          {Fore.GREEN}{test_loss:>15.4f}{Fore.RESET}")
+    print(f"Training Accuracy:   {Fore.GREEN}{train_accuracy:>15.2f}%{Fore.RESET}")
+    print(f"Test Accuracy:      {Fore.GREEN}{test_accuracy:>15.2f}%{Fore.RESET}")
+    print("------------------------------------------------")
+    
+    # Early stopping check - if test loss is significantly higher than training loss
+    if test_loss > 1.5 * loss.item():
+        print(f"{Fore.RED}Early stopping triggered - model may be overfitting{Fore.RESET}")
+        break
+
+
+    
 
 # -------------------------------------------------------------------------------
 print_header("Evaluating the Model")

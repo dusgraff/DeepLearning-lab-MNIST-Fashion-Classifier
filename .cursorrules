@@ -29,6 +29,7 @@ Technologys:
 - Jupyter Notebook
 
 Rules:
+- NEVER put print statements in side classes or class functions, unless there is a verbose flag parameter.
 - Always put imports at the top of the file.
 - Always include a comment before each line of code that explains what the code does.
 - Always include a comment line before any of, but ONLY, the following the looks like this in python:
