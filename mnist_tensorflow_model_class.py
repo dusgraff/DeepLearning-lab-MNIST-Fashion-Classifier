@@ -27,7 +27,7 @@ class MnistFashionCnnModel(tf.keras.Model):
     #     model = CNNModel()
     #     model.build((None, 28, 28, 1))  # Initialize model weights
 
-    def __init__(self, learning_rate=0.0005):
+    def __init__(self, learning_rate=0.0005, verbose=True):
         # Call parent class constructor
         super(MnistFashionCnnModel, self).__init__()
         
@@ -39,6 +39,7 @@ class MnistFashionCnnModel(tf.keras.Model):
         self._train_labels = None
         self._test_data = None
         self._test_labels = None
+        self.verbose = verbose  # Add verbose attribute
         
         # Define layers with kernel initializers for random weights
         self.conv1 = layers.Conv2D(32, (3, 3), padding='same',
@@ -360,7 +361,7 @@ class MnistFashionCnnModel(tf.keras.Model):
     # Example:
     #     model.save_parameters('.\\checkpoints\\model_checkpoint')
 
-    def save_parameters(self, checkpoint_path):
+    def save_parameters(self, checkpoint_path, verbose=False):
         try:
             # Create checkpoint directory if it doesn't exist
             checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -376,7 +377,7 @@ class MnistFashionCnnModel(tf.keras.Model):
             # Save the checkpoint
             checkpoint.save(checkpoint_path)
             
-            if self.verbose:
+            if verbose:
                 print(f"\nModel parameters saved to: {checkpoint_path}")
             
         except Exception as e:
@@ -390,7 +391,7 @@ class MnistFashionCnnModel(tf.keras.Model):
     # Example:
     #     model.load_parameters('.\\checkpoints\\model_checkpoint-1')
 
-    def load_parameters(self, checkpoint_path):
+    def load_parameters(self, checkpoint_path, verbose=False):
         try:
             # Create checkpoint object
             checkpoint = tf.train.Checkpoint(
@@ -404,7 +405,7 @@ class MnistFashionCnnModel(tf.keras.Model):
             # Wait for restore to complete
             status.expect_partial()
             
-            if self.verbose:
+            if verbose:
                 print(f"\nModel parameters loaded from: {checkpoint_path}")
             
         except Exception as e:
