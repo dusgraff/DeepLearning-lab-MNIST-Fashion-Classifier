@@ -1,5 +1,6 @@
-# DeepLearning-lab-MNIST
-"Hello World" of Deep Learning
+# MNIST Fashion Imange Classifier
+
+Convolutional Neural Network
 
 MNIST dataset - Image Classification
 
