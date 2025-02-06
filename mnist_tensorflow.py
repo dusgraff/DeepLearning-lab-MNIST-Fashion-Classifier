@@ -6,31 +6,8 @@ import os
 import multiprocessing
 from mnist_tensorflow_model_class import MnistFashionCnnModel
 
-# Get number of CPU cores
-num_cores = multiprocessing.cpu_count()
-
-# Configure TensorFlow to use all CPU cores
-tf.config.threading.set_inter_op_parallelism_threads(num_cores)
-tf.config.threading.set_intra_op_parallelism_threads(num_cores)
-
-# Enable memory growth
-physical_devices = tf.config.list_physical_devices('CPU')
-try:
-    tf.config.experimental.set_memory_growth(physical_devices[0], True)
-except:
-    pass
-
-# Optimize for CPU
-tf.config.optimizer.set_jit(True)  # Enable XLA compilation
-
-# Suppress TensorFlow logging
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=no INFO, 2=no INFO/WARN, 3=no INFO/WARN/ERROR
-tf.get_logger().setLevel('ERROR')  # Only show errors, not warnings
-
 clear_screen()
 print_header("Importing Modules")
-
-
 
 # Print header for imported modules
 print("\nImports complete")
@@ -53,7 +30,34 @@ print(f"Test data path:       {Fore.MAGENTA}{test_data_path:>35}{Fore.RESET}")
 print(f"Test labels path:     {Fore.MAGENTA}{test_labels_path:>35}{Fore.RESET}")
 
 # -------------------------------------------------------------------------------
+print_header("CUDA Configuration")
+
+# Get number of CPU cores
+num_cores = multiprocessing.cpu_count()
+
+# Configure TensorFlow to use all CPU cores
+tf.config.threading.set_inter_op_parallelism_threads(num_cores)
+tf.config.threading.set_intra_op_parallelism_threads(num_cores)
+
+# Enable memory growth
+physical_devices = tf.config.list_physical_devices('GPU')
+try:
+    for device in physical_devices:
+        tf.config.experimental.set_memory_growth(device, True)
+except:
+    pass
+
+# Optimize for GPU
+tf.config.optimizer.set_jit(True)  # Enable XLA compilation
+tf.config.experimental.enable_tensor_float_32_execution(True)  # Enable TF32 on Ampere GPUs
+
+# Suppress TensorFlow logging
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=no INFO, 2=no INFO/WARN, 3=no INFO/WARN/ERROR
+tf.get_logger().setLevel('ERROR')  # Only show errors, not warnings
+
+# -------------------------------------------------------------------------------
 print_header("Loading Data") 
+
 
 # Create instance of CNNModel with specific learning rate
 model = MnistFashionCnnModel(learning_rate=0.0005)

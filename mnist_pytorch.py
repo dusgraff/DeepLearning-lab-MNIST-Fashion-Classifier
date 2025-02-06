@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import time
 import sys
 
+
+
 # Print header for imported modules
 print("\nImports complete")
 
@@ -42,6 +44,17 @@ class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
 # -------------------------------------------------------------------------------
+print_header("CUDA Configuration")
+# Check if CUDA is available and set device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {Fore.GREEN}{device}{Fore.RESET}")
+
+# Print CUDA device properties if using GPU
+if device.type == 'cuda':
+    print(f"GPU Device: {Fore.GREEN}{torch.cuda.get_device_name(0)}{Fore.RESET}")
+    print(f"GPU Memory: {Fore.GREEN}{torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB{Fore.RESET}")
+
+# -------------------------------------------------------------------------------
 print_header("Load MNIST Dataset") 
 
 # Load training data and labels from numpy files
@@ -59,16 +72,11 @@ print(f"Training labels shape: {Fore.GREEN}{str(train_labels.shape):<20}{Fore.RE
 print(f"Test data shape:       {Fore.GREEN}{str(test_data.shape):<20}{Fore.RESET}")
 print(f"Test labels shape:     {Fore.GREEN}{str(test_labels.shape):<20}{Fore.RESET}")
 
-
-
-# -------------------------------------------------------------------------------
-print_header("Normalizing Data") 
-
-# Convert numpy arrays to PyTorch tensors and normalize pixel values to [0,1]
-train_data = torch.FloatTensor(train_data) / 255.0 
-train_labels = torch.LongTensor(train_labels)
-test_data = torch.FloatTensor(test_data) / 255.0
-test_labels = torch.LongTensor(test_labels)
+# When loading/converting data, move to device
+train_data = torch.FloatTensor(train_data).to(device) / 255.0 
+train_labels = torch.LongTensor(train_labels).to(device)
+test_data = torch.FloatTensor(test_data).to(device) / 255.0
+test_labels = torch.LongTensor(test_labels).to(device)
 
 # Add channel dimension for CNN input (N, H, W) -> (N, C, H, W)
 train_data = train_data.unsqueeze(1)
@@ -147,8 +155,8 @@ class CNN(nn.Module):
         
         return x
 
-# Create an instance of the model
-model = CNN()
+# Move model to device after creation
+model = CNN().to(device)
 
 # Print model architecture
 print(model)
